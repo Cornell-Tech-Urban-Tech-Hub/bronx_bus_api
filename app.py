@@ -1,19 +1,23 @@
-# We now need the json library so we can load and export json data
-import json
+import os
+import pandas as pd
 
 from flask import Flask
     
 app = Flask(__name__)
 
-# We're using the new route that allows us to read a date from the URL
-@app.route('/weather/<date>')
-def weather(date):
-    # Additionally, we're now loading the JSON file's data into file_data 
-    # every time a request is made to this endpoint
-    with open('./seattle-data.json', 'r') as jsonfile:
-        file_data = json.loads(jsonfile.read())
-    # We can then find the data for the requested date and send it back as json
-    return json.dumps(file_data[date])
+datadir='/csv/'
+datapath=os.getcwd()+datadir
+
+def csv_to_json(table_name):
+    df = pd.read_csv(datapath+'test.csv', delimiter='\t')
+
+    # we could also just inject dataframes directly here by using a function factory (e.g. pass the name of the dataframe you want)
+    return df.to_json(orient='records')
+
+# route that allows us to read a date from the URL
+@app.route('/table/<table_name>')
+def table(table_name):
+    return csv_to_json(table_name)
 
 if __name__ == '__main__':
     app.run(debug=True)
