@@ -1,10 +1,8 @@
 import os
 import json
-import sys
 import csv
 
 from flask import Flask
-    
 app = Flask(__name__)
 
 datadir='/csv/'
@@ -24,7 +22,6 @@ def csv_to_json(table_name):
     }
 
     return json.dumps(container, indent=4)
-
 
 
 # route that allows us to read a date from the URL
